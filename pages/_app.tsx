@@ -1,5 +1,6 @@
 import { Poppins } from "@next/font/google";
 import type { AppProps } from "next/app";
+import { Alert } from "../components/Alert";
 
 import "../styles/tailwind.css";
 

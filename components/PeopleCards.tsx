@@ -1,8 +1,12 @@
 import { ReactNode } from "react";
+import { Alert } from "./Alert";
 
 export function PeopleCards() {
   return (
-    <div className="h-screen flex flex-col">
+    <div className="relative h-screen flex flex-col">
+      <Alert>
+        <h2 className="text-center text-gray-300 font-bold">Dad arrived!</h2>
+      </Alert>
       <h1 className="text-white font-bold text-center text-6xl py-[20vh]">
         Who's home?
       </h1>
