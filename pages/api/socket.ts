@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Server } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import findLocal from "local-devices";
 
 type Data = {
   socket?: {
@@ -28,15 +29,10 @@ export default function handler(
   res.socket.server.io = io;
 
   // Define actions inside
-  io.on("connection", (socket) => {
-    socket.broadcast.emit("connected", "eyo connected ofwa");
-
-    socket.on("scan", (msg) => {
-      console.log(msg);
-      socket.broadcast.emit(
-        "scan",
-        JSON.stringify({ name: "schatje", mac: "mkay" })
-      );
+  io.on("connection", async (socket) => {
+    socket.on("scan", async () => {
+      const data = await findLocal();
+      socket.broadcast.emit("scanResult", JSON.stringify(data));
     });
   });
 

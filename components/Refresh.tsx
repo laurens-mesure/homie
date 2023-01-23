@@ -10,8 +10,6 @@ export function Refresh() {
     // @ts-ignore
     const socket = window!.socket as Socket<DefaultEventsMap, DefaultEventsMap>;
 
-    console.log("emitting...");
-
     socket.emit("scan", "just a message");
   }
 

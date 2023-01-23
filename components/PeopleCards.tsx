@@ -12,7 +12,7 @@ export function PeopleCards() {
       <h1 className="text-white font-bold text-center text-6xl py-[20vh]">
         Who's home?
       </h1>
-      <ul className="group flex flex-row gap-20 flex-wrap w-full bg-indigo-500/50 justify-around">
+      <ul className="group flex flex-row gap-20 flex-wrap w-full justify-around">
         <Card>
           <CardTitle>Mom</CardTitle>
           <CardDescription>Arrived at 16:43</CardDescription>

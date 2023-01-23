@@ -10,6 +10,8 @@ const poppins = Poppins({
   subsets: ["latin"],
 });
 
+type IScanRes = { name: string; ip: string; mac: string }[];
+
 export default function App({ Component, pageProps }: AppProps) {
   async function socketInit() {
     await fetch("/api/socket");
@@ -24,6 +26,12 @@ export default function App({ Component, pageProps }: AppProps) {
 
     socket.on("scan", (msg) => {
       console.log("scan", msg);
+    });
+
+    socket.on("scanResult", (msg) => {
+      const results = JSON.parse(msg) as IScanRes;
+
+      console.log(results);
     });
   }
 
