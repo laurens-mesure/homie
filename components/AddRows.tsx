@@ -1,9 +1,19 @@
 import { faker } from "@faker-js/faker";
 
-const entries = Array.from(Array(20)).map(() => ({
-  name: faker.name.fullName(),
-  mac: faker.internet.mac(),
-}));
+const entries = [
+  {
+    name: "Ann-Sophie",
+    mac: "something not ",
+  },
+  {
+    name: "Laurens",
+    mac: "Lorem ipsum dolor sit amet.",
+  },
+  {
+    name: "Simba 🐕",
+    mac: "cutie",
+  },
+];
 
 export function AddRows() {
   return (
@@ -35,7 +45,9 @@ export function MacAddresses() {
       name="mac"
     >
       {entries.map((entry) => (
-        <option value={entry.mac}>{entry.mac}</option>
+        <option key={entry.mac} value={entry.mac}>
+          {entry.mac}
+        </option>
       ))}
     </select>
   );

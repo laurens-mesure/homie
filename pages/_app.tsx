@@ -1,6 +1,7 @@
 import { Poppins } from "@next/font/google";
 import type { AppProps } from "next/app";
-import { Alert } from "../components/Alert";
+import { useEffect } from "react";
+import { io } from "socket.io-client";
 
 import "../styles/tailwind.css";
 
@@ -8,7 +9,28 @@ const poppins = Poppins({
   weight: ["300", "500", "700"],
   subsets: ["latin"],
 });
+
 export default function App({ Component, pageProps }: AppProps) {
+  async function socketInit() {
+    await fetch("/api/socket");
+    const socket = io();
+
+    // @ts-ignore
+    window.socket = socket;
+
+    socket.on("connected", (msg) => {
+      console.log(msg);
+    });
+
+    socket.on("scan", (msg) => {
+      console.log("scan", msg);
+    });
+  }
+
+  useEffect(() => {
+    socketInit();
+  }, []);
+
   return (
     <main
       className={

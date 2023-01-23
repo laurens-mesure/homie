@@ -1,16 +1,18 @@
 import { ReactNode } from "react";
 import { Alert } from "./Alert";
+import { Refresh } from "./Refresh";
 
 export function PeopleCards() {
   return (
-    <div className="relative h-screen flex flex-col">
+    <div className="relative h-screen flex flex-col w-full">
+      <Refresh />
       <Alert>
         <h2 className="text-center text-gray-300 font-bold">Dad arrived!</h2>
       </Alert>
       <h1 className="text-white font-bold text-center text-6xl py-[20vh]">
         Who's home?
       </h1>
-      <ul className="group flex flex-row gap-20 flex-wrap">
+      <ul className="group flex flex-row gap-20 flex-wrap w-full bg-indigo-500/50 justify-around">
         <Card>
           <CardTitle>Mom</CardTitle>
           <CardDescription>Arrived at 16:43</CardDescription>
