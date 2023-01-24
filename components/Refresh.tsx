@@ -15,7 +15,7 @@ export function Refresh() {
 
   return (
     <button
-      className="p-5 bg-gray-500 rounded-md sticky top-5 right-5 bottom-5 self-start ml-auto"
+      className="p-5 bg-sky-900 rounded-md sticky top-5 right-5 bottom-5 self-start ml-auto"
       onClick={reScan}
       type="button"
     >

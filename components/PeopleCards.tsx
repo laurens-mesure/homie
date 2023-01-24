@@ -4,12 +4,9 @@ import { Refresh } from "./Refresh";
 
 export function PeopleCards() {
   return (
-    <div className="relative h-screen flex flex-col w-full">
+    <div className="relative h-screen flex flex-col w-full p-5">
       <Refresh />
-      <Alert>
-        <h2 className="text-center text-gray-300 font-bold">Dad arrived!</h2>
-      </Alert>
-      <h1 className="text-white font-bold text-center text-6xl py-[20vh]">
+      <h1 className="text-gray-300 font-bold text-center text-6xl py-[20vh]">
         Who's home?
       </h1>
       <ul className="group flex flex-row gap-20 flex-wrap w-full justify-around">
@@ -28,13 +25,16 @@ export function PeopleCards() {
           <CardDescription>Arrived at 18:43</CardDescription>
         </Card>
       </ul>
+      <Alert>
+        <h2 className="text-center text-lg font-bold">Dad arrived!</h2>
+      </Alert>
     </div>
   );
 }
 
 function CardTitle({ children }: { children: ReactNode }) {
   return (
-    <h2 className="text-2xl text-center uppercase font-black font-sans mb-4 min-w-[15vw]">
+    <h2 className="text-2xl text-center uppercase font-black font-sans min-w-[15vw]">
       {children}
     </h2>
   );
@@ -42,7 +42,7 @@ function CardTitle({ children }: { children: ReactNode }) {
 
 function CardDescription({ children }: { children: ReactNode }) {
   return (
-    <p className="relative text-center opacity-0 group-hover:opacity-100 translate-y-5 ease-in-out group-hover:translate-y-0 transition-all duration-150">
+    <p className="relative text-center overflow-hidden h-0 group-hover:h-6 opacity-0 group-hover:opacity-100 translate-y-5 ease-in-out group-hover:translate-y-0 transition-all duration-150">
       {children}
     </p>
   );
@@ -50,7 +50,7 @@ function CardDescription({ children }: { children: ReactNode }) {
 
 function Card({ children }: { children: ReactNode }) {
   return (
-    <li className="rounded-2xl bg-[#D5CEA3] p-10 text-neutral-800 font-bold shadow-2xl cursor-default">
+    <li className="rounded-2xl bg-[#0F3460] p-10 text-gray-300 font-bold cursor-default">
       {children}
     </li>
   );

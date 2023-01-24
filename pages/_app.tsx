@@ -43,7 +43,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <main
       className={
         poppins.className +
-        "relative grid place-items-center h-full min-h-screen max-w-full bg-[#1A120B] text-gray-300"
+        "relative grid place-items-center h-full min-h-screen max-w-full bg-[#16213E] text-gray-300"
       }
     >
       <Component {...pageProps} />
