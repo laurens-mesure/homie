@@ -1,26 +1,13 @@
-import { faker } from "@faker-js/faker";
-
-const entries = [
-  {
-    name: "Ann-Sophie",
-    mac: "something not ",
-  },
-  {
-    name: "Laurens",
-    mac: "Lorem ipsum dolor sit amet.",
-  },
-  {
-    name: "Simba 🐕",
-    mac: "cutie",
-  },
-];
+import { useMacStore } from "../stores/macStore";
 
 export function AddRows() {
+  const { macs } = useMacStore();
+
   return (
-    <ol className="h-screen overflow-auto w-full">
-      {entries.map((key) => (
+    <ol className="w-full">
+      {macs.map((mac) => (
         <li
-          key={key.name}
+          key={mac}
           className="h-[5vh] border-b first:border-y border-gray-300 px-5"
         >
           <form className="flex flex-row h-full w-full">
@@ -28,7 +15,7 @@ export function AddRows() {
               className="bg-transparent text-gray-300 w-full border h-full border-transparent text-lg outline-none placeholder:opacity-20"
               name="name"
               autoComplete="off"
-              placeholder={key.name}
+              placeholder={"Some random name 🎄"}
             />
             <MacAddresses />
           </form>
@@ -39,14 +26,16 @@ export function AddRows() {
 }
 
 export function MacAddresses() {
+  const { macs } = useMacStore();
+
   return (
     <select
       className="w-1/4 bg-transparent text-gray-300 hover:text-yellow-600"
       name="mac"
     >
-      {entries.map((entry) => (
-        <option key={entry.mac} value={entry.mac}>
-          {entry.mac}
+      {macs.map((mac) => (
+        <option key={mac} value={mac}>
+          {mac}
         </option>
       ))}
     </select>

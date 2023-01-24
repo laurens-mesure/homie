@@ -19,7 +19,6 @@ export default function handler(
   // It means that socket server was already initialised
   // @ts-ignore
   if (res.socket.server.io) {
-    console.log("Already set up");
     return res.end();
   }
 
@@ -30,12 +29,15 @@ export default function handler(
 
   // Define actions inside
   io.on("connection", async (socket) => {
+    // init
+    const data = await findLocal();
+    socket.broadcast.emit("scanResult", JSON.stringify(data));
+
     socket.on("scan", async () => {
       const data = await findLocal();
       socket.broadcast.emit("scanResult", JSON.stringify(data));
     });
   });
 
-  console.log("Setting up socket");
   res.end();
 }

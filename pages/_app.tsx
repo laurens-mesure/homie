@@ -1,7 +1,8 @@
 import { Poppins } from "@next/font/google";
 import type { AppProps } from "next/app";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
+import { useMacStore } from "../stores/macStore";
 
 import "../styles/tailwind.css";
 
@@ -10,9 +11,11 @@ const poppins = Poppins({
   subsets: ["latin"],
 });
 
-type IScanRes = { name: string; ip: string; mac: string }[];
+export type IScanRes = { name: string; ip: string; mac: string };
 
 export default function App({ Component, pageProps }: AppProps) {
+  const { setStore: setMacs } = useMacStore();
+
   async function socketInit() {
     await fetch("/api/socket");
     const socket = io();
@@ -20,18 +23,11 @@ export default function App({ Component, pageProps }: AppProps) {
     // @ts-ignore
     window.socket = socket;
 
-    socket.on("connected", (msg) => {
-      console.log(msg);
-    });
-
-    socket.on("scan", (msg) => {
-      console.log("scan", msg);
-    });
-
     socket.on("scanResult", (msg) => {
-      const results = JSON.parse(msg) as IScanRes;
+      const results = JSON.parse(msg) as IScanRes[];
+      console.debug(`📨 received results`, results);
 
-      console.log(results);
+      setMacs({ macs: Array.from(new Set(results.map((res) => res.mac))) });
     });
   }
 
