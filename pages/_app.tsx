@@ -3,7 +3,7 @@ import { Poppins } from "@next/font/google";
 import type { AppProps } from "next/app";
 import { io } from "socket.io-client";
 
-import { useMacStore } from "../stores/macStore";
+import { Homie, IScanRes, SavedMacs, useMacStore } from "../stores/macStore";
 
 import "../styles/tailwind.css";
 
@@ -12,11 +12,8 @@ const poppins = Poppins({
   subsets: ["latin"],
 });
 
-export type IScanRes = { name: string; ip: string; mac: string };
-export type SavedMacs = { name: string; mac: string }[];
-
 export default function App({ Component, pageProps }: AppProps) {
-  const { homies, macs, saves, setStore } = useMacStore();
+  const { macs, setStore } = useMacStore();
 
   const socketInit = useCallback(async () => {
     await fetch("/api/socket");
@@ -29,8 +26,9 @@ export default function App({ Component, pageProps }: AppProps) {
     socket.on("scanResult", (msg) => {
       const results = JSON.parse(msg) as IScanRes[];
       console.debug(`📨 received results`, results);
+      const newMacs = Array.from(new Set(results.map((res) => res.mac)));
 
-      setStore({ macs: Array.from(new Set(results.map((res) => res.mac))) });
+      setStore({ macs: newMacs });
     });
   }, [setStore]);
 
@@ -45,14 +43,28 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [savesInit, socketInit]);
 
   useEffect(() => {
-    const notHome = saves.map((save) => save.mac).filter((mac) => !homies.includes(mac));
-    const newComers = macs.filter((mac) => notHome.includes(mac));
+    setStore(({ homies, saves }) => {
+      const homiesMacs = homies.map((homie) => homie.mac);
+      const notHome = saves.map((save) => save.mac).filter((mac) => !homiesMacs.includes(mac));
+      const newcomers: SavedMacs = saves.filter((save) => notHome.includes(save.mac));
 
-    newComers.forEach((newComer) => {
-      // TODO: Alert
-      console.log(newComer);
+      newcomers.forEach((newcomer) => {
+        // TODO: Alert
+        console.log(newcomer);
+      });
+
+      const newHomies: Homie[] = [
+        ...homies,
+        ...newcomers.map((newcomer) => ({
+          name: newcomer.name,
+          timestamp: new Date(),
+          mac: newcomer.mac,
+        })),
+      ];
+
+      return { homies: newHomies };
     });
-  }, [homies, macs, saves]);
+  }, [macs, setStore]);
 
   return (
     <main

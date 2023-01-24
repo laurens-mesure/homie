@@ -1,28 +1,29 @@
 import { ReactNode } from "react";
 
+import { useMacStore } from "../stores/macStore";
+
 import { Alert } from "./Alert";
 import { Refresh } from "./Refresh";
 
 export function PeopleCards() {
+  const { homies } = useMacStore();
+
   return (
     <div className="relative flex h-screen w-full flex-col p-5">
       <Refresh />
       <h1 className="py-[20vh] text-center text-6xl font-bold text-gray-300">Who&apos;s home?</h1>
       <ul className="group flex w-full flex-row flex-wrap justify-around gap-20">
-        <Card>
-          <CardTitle>Mom</CardTitle>
-          <CardDescription>Arrived at 16:43</CardDescription>
-        </Card>
-
-        <Card>
-          <CardTitle>Dad</CardTitle>
-          <CardDescription>Arrived at 18:43</CardDescription>
-        </Card>
-
-        <Card>
-          <CardTitle>Simba 🐕</CardTitle>
-          <CardDescription>Arrived at 18:43</CardDescription>
-        </Card>
+        {!homies.length && (
+          <p className="text-center text-2xl font-bold text-gray-300/40">
+            Nobody is home sadface 😢
+          </p>
+        )}
+        {homies.map((homie) => (
+          <Card key={homie.mac}>
+            <CardTitle>{homie.name}</CardTitle>
+            <CardDescription>Arrived at {homie.timestamp.toLocaleTimeString()}</CardDescription>
+          </Card>
+        ))}
       </ul>
       <Alert>
         <h2 className="text-center text-lg font-bold">Dad arrived!</h2>
