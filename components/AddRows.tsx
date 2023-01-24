@@ -7,7 +7,7 @@ export function AddRows() {
   const { macs, saves, setStore } = useMacStore();
   const allMacs = Array.from(new Set([...macs, ...saves.map((save) => save.mac)]));
 
-  function saveMac(e: FormEvent<HTMLFormElement>, uuid?: string) {
+  function saveMac(e: FormEvent<HTMLFormElement>, uuid: string) {
     e.preventDefault();
 
     const data = new FormData(e.currentTarget);
@@ -17,12 +17,16 @@ export function AddRows() {
     if (name == null || !mac || mac === "") return;
 
     const uniqueSaves = new Map(saves.map((save) => [save.index, save]));
-
-    if (name === "" && uuid) {
+    if (name === "") {
       uniqueSaves.delete(uuid);
     } else {
-      const newUuid = uuidv4();
-      uniqueSaves.set(newUuid, { name, mac, index: newUuid });
+      uniqueSaves.set(uuid, { name, mac, index: uuid });
+    }
+
+    const prevEmptySave = Array.from(uniqueSaves.values()).find((save) => save.name === "");
+    if (!prevEmptySave) {
+      const newSaveIndex = uuidv4();
+      uniqueSaves.set(newSaveIndex, { index: newSaveIndex, name: "", mac: "" });
     }
 
     localStorage.setItem("saves", JSON.stringify(Array.from(uniqueSaves.values())));
@@ -59,7 +63,7 @@ export function MacAddresses({
   return (
     <select
       className="w-1/4 bg-transparent text-gray-300 hover:text-yellow-600"
-      defaultValue={defaultValue}
+      defaultValue={defaultValue || undefined}
       name="mac"
     >
       {allMacs.map((mac) => (

@@ -2,6 +2,7 @@ import { useCallback, useEffect } from "react";
 import { Poppins } from "@next/font/google";
 import type { AppProps } from "next/app";
 import { io } from "socket.io-client";
+import { v4 as uuidv4 } from "uuid";
 
 import { Homie, IScanRes, SavedMacs, useMacStore } from "../stores/macStore";
 
@@ -34,7 +35,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   const savesInit = useCallback(() => {
     const saves: SavedMacs = JSON.parse(localStorage.getItem("saves") || "[]");
-    setStore({ saves });
+    setStore({ saves: !saves.length ? [{ index: uuidv4(), name: "", mac: "" }] : saves });
   }, [setStore]);
 
   useEffect(() => {
