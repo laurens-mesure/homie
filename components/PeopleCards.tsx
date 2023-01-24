@@ -1,15 +1,14 @@
 import { ReactNode } from "react";
+
 import { Alert } from "./Alert";
 import { Refresh } from "./Refresh";
 
 export function PeopleCards() {
   return (
-    <div className="relative h-screen flex flex-col w-full p-5">
+    <div className="relative flex h-screen w-full flex-col p-5">
       <Refresh />
-      <h1 className="text-gray-300 font-bold text-center text-6xl py-[20vh]">
-        Who's home?
-      </h1>
-      <ul className="group flex flex-row gap-20 flex-wrap w-full justify-around">
+      <h1 className="py-[20vh] text-center text-6xl font-bold text-gray-300">Who&apos;s home?</h1>
+      <ul className="group flex w-full flex-row flex-wrap justify-around gap-20">
         <Card>
           <CardTitle>Mom</CardTitle>
           <CardDescription>Arrived at 16:43</CardDescription>
@@ -34,15 +33,13 @@ export function PeopleCards() {
 
 function CardTitle({ children }: { children: ReactNode }) {
   return (
-    <h2 className="text-2xl text-center uppercase font-black font-sans min-w-[15vw]">
-      {children}
-    </h2>
+    <h2 className="min-w-[15vw] text-center font-sans text-2xl font-black uppercase">{children}</h2>
   );
 }
 
 function CardDescription({ children }: { children: ReactNode }) {
   return (
-    <p className="relative text-center overflow-hidden h-0 group-hover:h-6 opacity-0 group-hover:opacity-100 translate-y-5 ease-in-out group-hover:translate-y-0 transition-all duration-150">
+    <p className="relative h-0 translate-y-5 overflow-hidden text-center opacity-0 transition-all duration-150 ease-in-out group-hover:h-6 group-hover:translate-y-0 group-hover:opacity-100">
       {children}
     </p>
   );
@@ -50,7 +47,7 @@ function CardDescription({ children }: { children: ReactNode }) {
 
 function Card({ children }: { children: ReactNode }) {
   return (
-    <li className="rounded-2xl bg-[#0F3460] p-10 text-gray-300 font-bold cursor-default">
+    <li className="cursor-default rounded-2xl bg-[#0F3460] p-10 font-bold text-gray-300">
       {children}
     </li>
   );
