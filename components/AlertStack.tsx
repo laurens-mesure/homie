@@ -7,8 +7,8 @@ export function AlertStack() {
 
   return (
     <div className="sticky bottom-0 top-0 mt-auto self-start">
-      {content?.map((content) => (
-        <Alert content={content} key={content} />
+      {content?.map(({ key, value }) => (
+        <Alert content={value} key={key} />
       ))}
     </div>
   );

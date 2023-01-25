@@ -9,6 +9,7 @@ interface IMacStore {
   macs: string[];
   saves: SavedMacs;
   homies: Homie[];
+  refreshStaged: boolean;
   setStore: (
     partial:
       | IMacStore
@@ -22,5 +23,6 @@ export const useMacStore = create<IMacStore>((set) => ({
   macs: [],
   saves: [],
   homies: [],
+  refreshStaged: false,
   setStore: set,
 }));

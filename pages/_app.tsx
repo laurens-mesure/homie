@@ -77,7 +77,9 @@ export default function App({ Component, pageProps }: AppProps) {
         if (!alreadyUpdated) {
           const notification = new Audio("/notification.mp3");
           notification.play();
-          setAlertStore((prev) => ({ content: [...(prev.content ?? []), `${save.name} arrived`] }));
+          setAlertStore((prev) => ({
+            content: [...(prev.content ?? []), { key: uuidv4(), value: `${save.name} arrived` }],
+          }));
           checkedHomies.push({
             name: save.name,
             mac: save.mac,

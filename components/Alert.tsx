@@ -24,7 +24,7 @@ export function Alert({ content }: { content: string }) {
     let timeout: NodeJS.Timeout;
     if (!show) {
       timeout = setTimeout(() => {
-        setStore((prev) => ({ content: prev.content?.filter((_content) => _content !== content) }));
+        setStore((prev) => ({ content: prev.content?.filter(({ value }) => value !== content) }));
       }, 1500);
     }
 

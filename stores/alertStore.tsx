@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 interface IAlertStore {
-  content: string[] | null;
+  content: { key: string; value: string }[] | null;
   setStore: (
     partial:
       | IAlertStore
