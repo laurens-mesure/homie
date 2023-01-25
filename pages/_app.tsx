@@ -42,7 +42,7 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     socketInit();
     savesInit();
-    const interval = setInterval(reScan, 5000);
+    const interval = setInterval(reScan, 600000); // 10min
 
     return () => clearInterval(interval);
   }, [savesInit, socketInit]);
