@@ -4,7 +4,8 @@ import type { AppProps } from "next/app";
 import { io } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 
-import { Homie, IScanRes, SavedMacs, useMacStore } from "../stores/macStore";
+import { reScan } from "../functions/requestScan";
+import { IScanRes, SavedMacs, useMacStore } from "../stores/macStore";
 
 import "../styles/tailwind.css";
 
@@ -41,29 +42,25 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     socketInit();
     savesInit();
+    const interval = setInterval(reScan, 5000);
+
+    return () => clearInterval(interval);
   }, [savesInit, socketInit]);
 
   useEffect(() => {
     setStore(({ homies, saves }) => {
-      const homiesMacs = homies.map((homie) => homie.mac);
-      const notHome = saves.map((save) => save.mac).filter((mac) => !homiesMacs.includes(mac));
-      const newcomers: SavedMacs = saves.filter((save) => notHome.includes(save.mac));
+      const refreshedSavesMacs = saves.filter((save) => macs.includes(save.mac));
+      const refreshedHomies = refreshedSavesMacs.map((save) => {
+        const oldHomie = homies.find(({ mac }) => mac === save.mac);
 
-      newcomers.forEach((newcomer) => {
-        // TODO: Alert
-        console.log(newcomer);
+        return {
+          name: save.name,
+          timestamp: oldHomie ? oldHomie.timestamp : new Date(),
+          mac: save.mac,
+        };
       });
 
-      const newHomies: Homie[] = [
-        ...homies,
-        ...newcomers.map((newcomer) => ({
-          name: newcomer.name,
-          timestamp: new Date(),
-          mac: newcomer.mac,
-        })),
-      ];
-
-      return { homies: newHomies };
+      return { homies: refreshedHomies };
     });
   }, [macs, setStore]);
 
