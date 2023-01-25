@@ -37,9 +37,6 @@ module.exports = {
         groups: [
           // Packages. `react` related packages come first.
           ["^react", "^@?\\w"],
-          // Internal packages.
-          // TODO: change this back to @app
-          ["^(@|@harbours.io|@ui|components|utils|types|config)(/.*|$)"],
           // Side effect imports.
           ["^\\u0000"],
           // Parent imports. Put `..` last.

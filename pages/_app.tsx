@@ -5,6 +5,7 @@ import { io } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 
 import { reScan } from "../functions/requestScan";
+import { useAlertStore } from "../stores/alertStore";
 import { IScanRes, SavedMacs, useMacStore } from "../stores/macStore";
 
 import "../styles/tailwind.css";
@@ -16,6 +17,7 @@ const poppins = Poppins({
 
 export default function App({ Component, pageProps }: AppProps) {
   const { macs, setStore } = useMacStore();
+  const { setStore: setAlertStore } = useAlertStore();
 
   const socketInit = useCallback(async () => {
     await fetch("/api/socket");
@@ -53,6 +55,10 @@ export default function App({ Component, pageProps }: AppProps) {
       const refreshedHomies = refreshedSavesMacs.map((save) => {
         const oldHomie = homies.find(({ mac }) => mac === save.mac);
 
+        if (!oldHomie) {
+          setAlertStore((prev) => ({ content: [...(prev.content ?? []), `${save.name} arrived`] }));
+        }
+
         return {
           name: save.name,
           timestamp: oldHomie ? oldHomie.timestamp : new Date(),
@@ -62,7 +68,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
       return { homies: refreshedHomies };
     });
-  }, [macs, setStore]);
+  }, [macs, setAlertStore, setStore]);
 
   return (
     <main

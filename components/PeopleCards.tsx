@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 
 import { useMacStore } from "../stores/macStore";
 
+import { AlertStack } from "./AlertStack";
 import { Refresh } from "./Refresh";
 
 export function PeopleCards() {
@@ -26,9 +27,7 @@ export function PeopleCards() {
           </Card>
         ))}
       </ul>
-      {/* <Alert>
-        <h2 className="text-center text-lg font-bold">Dad arrived!</h2>
-      </Alert> */}
+      <AlertStack />
     </div>
   );
 }
