@@ -4,6 +4,7 @@ import type { AppProps } from "next/app";
 import { io } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 
+import { ProvokeInteraction } from "../components/ProvokeInteraction";
 import { reScan } from "../functions/requestScan";
 import { useAlertStore } from "../stores/alertStore";
 import { Homie, IScanRes, SavedMacs, useMacStore } from "../stores/macStore";
@@ -98,6 +99,7 @@ export default function App({ Component, pageProps }: AppProps) {
         "relative grid h-full min-h-screen max-w-full place-items-center bg-[#16213E] text-gray-300"
       }
     >
+      <ProvokeInteraction />
       <Component {...pageProps} />
     </main>
   );
