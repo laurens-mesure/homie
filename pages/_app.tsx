@@ -74,6 +74,8 @@ export default function App({ Component, pageProps }: AppProps) {
       refreshedSavesMacs.forEach((save) => {
         const alreadyUpdated = checkedHomies.find(({ mac }) => save.mac === mac);
         if (!alreadyUpdated) {
+          const notification = new Audio("/notification.mp3");
+          notification.play();
           setAlertStore((prev) => ({ content: [...(prev.content ?? []), `${save.name} arrived`] }));
           checkedHomies.push({
             name: save.name,
