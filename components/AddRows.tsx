@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useMacStore } from "../stores/macStore";
 
 export function AddRows() {
-  const { macs, saves, setStore } = useMacStore();
+  const { homies, macs, saves, setStore } = useMacStore();
   const allMacs = Array.from(new Set([...macs, ...saves.map((save) => save.mac)]));
 
   function saveMac(e: FormEvent<HTMLFormElement>, uuid: string) {
@@ -30,6 +30,14 @@ export function AddRows() {
     }
 
     localStorage.setItem("saves", JSON.stringify(Array.from(uniqueSaves.values())));
+
+    const existingHomie = homies.find((homie) => homie.mac === mac);
+
+    if (existingHomie) {
+      existingHomie.name = name;
+
+      return setStore({ saves: Array.from(uniqueSaves.values()), homies: [...homies] });
+    }
     setStore({ saves: Array.from(uniqueSaves.values()) });
   }
 
