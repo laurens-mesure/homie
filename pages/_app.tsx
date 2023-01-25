@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { reScan } from "../functions/requestScan";
 import { useAlertStore } from "../stores/alertStore";
-import { IScanRes, SavedMacs, useMacStore } from "../stores/macStore";
+import { Homie, IScanRes, SavedMacs, useMacStore } from "../stores/macStore";
 
 import "../styles/tailwind.css";
 
@@ -44,7 +44,8 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     socketInit();
     savesInit();
-    const interval = setInterval(reScan, 600000); // 10min
+    // const interval = setInterval(reScan, 600000); // 10min
+    const interval = setInterval(reScan, 5000); // 5sec
 
     return () => clearInterval(interval);
   }, [savesInit, socketInit]);
@@ -52,21 +53,39 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     setStore(({ homies, saves }) => {
       const refreshedSavesMacs = saves.filter((save) => macs.includes(save.mac));
-      const refreshedHomies = refreshedSavesMacs.map((save) => {
-        const oldHomie = homies.find(({ mac }) => mac === save.mac);
+      const checkedHomies: Homie[] = homies
+        .map((homie) => {
+          const isHomieUpdated = refreshedSavesMacs.find(({ mac }) => mac === homie.mac);
 
-        if (!oldHomie) {
+          if (isHomieUpdated) return { ...homie, ghost: false, updatedAt: new Date() };
+
+          if (homie.ghost && new Date().getTime() - homie.updatedAt.getTime() > 60 * 60 * 1000) {
+            return null;
+          }
+
+          return {
+            ...homie,
+            ghost: true,
+            updatedAt: new Date(),
+          };
+        })
+        .filter(Boolean) as Homie[];
+
+      refreshedSavesMacs.forEach((save) => {
+        const alreadyUpdated = checkedHomies.find(({ mac }) => save.mac === mac);
+        if (!alreadyUpdated) {
           setAlertStore((prev) => ({ content: [...(prev.content ?? []), `${save.name} arrived`] }));
+          checkedHomies.push({
+            name: save.name,
+            mac: save.mac,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            ghost: false,
+          });
         }
-
-        return {
-          name: save.name,
-          timestamp: oldHomie ? oldHomie.timestamp : new Date(),
-          mac: save.mac,
-        };
       });
 
-      return { homies: refreshedHomies };
+      return { homies: checkedHomies };
     });
   }, [macs, setAlertStore, setStore]);
 

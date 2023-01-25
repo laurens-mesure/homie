@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
+import clsx from "clsx";
 
-import { useMacStore } from "../stores/macStore";
+import { Homie, useMacStore } from "../stores/macStore";
 
 import { AlertStack } from "./AlertStack";
 import { Refresh } from "./Refresh";
@@ -21,9 +22,13 @@ export function PeopleCards() {
           </p>
         )}
         {_homies.map((homie) => (
-          <Card key={homie.mac}>
+          <Card homie={homie} key={homie.mac}>
             <CardTitle>{homie.name}</CardTitle>
-            <CardDescription>Arrived at {homie.timestamp.toLocaleTimeString()}</CardDescription>
+            <CardDescription>
+              {homie.ghost
+                ? `Last seen at ${homie.updatedAt.toLocaleTimeString()}`
+                : `Arrived at ${homie.createdAt.toLocaleTimeString()}`}
+            </CardDescription>
           </Card>
         ))}
       </ul>
@@ -46,9 +51,14 @@ function CardDescription({ children }: { children: ReactNode }) {
   );
 }
 
-function Card({ children }: { children: ReactNode }) {
+function Card({ children, homie }: { children: ReactNode; homie: Homie }) {
   return (
-    <li className="cursor-default rounded-2xl bg-[#0F3460] p-10 font-bold text-gray-300">
+    <li
+      className={clsx(
+        "cursor-default rounded-2xl bg-[#0F3460] p-10 font-bold text-gray-300 transition-opacity duration-300",
+        homie.ghost && "opacity-50"
+      )}
+    >
       {children}
     </li>
   );
