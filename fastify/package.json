@@ -1,0 +1,21 @@
+{
+  "name": "fastify",
+  "version": "1.0.0",
+  "description": "Simple fastify x socket.io server that scans the local network",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "fastify",
+    "socket.io",
+    "network-scanner"
+  ],
+  "author": "Laurens Mesure",
+  "license": "Commons Clause",
+  "dependencies": {
+    "fastify": "^4.12.0",
+    "fastify-socket.io": "^4.0.0",
+    "local-devices": "^4.0.0"
+  }
+}
