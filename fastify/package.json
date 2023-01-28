@@ -4,7 +4,7 @@
   "description": "Simple fastify x socket.io server that scans the local network",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
   "keywords": [
     "fastify",
@@ -13,5 +13,8 @@
   ],
   "author": "Laurens Mesure",
   "license": "Commons Clause",
-  "dependencies": { "bun": "^0.5.1", "local-devices": "^4.0.0" }
+  "dependencies": {
+    "@fastify/websocket": "^7.1.2",
+    "fastify": "^4.12.0"
+  }
 }

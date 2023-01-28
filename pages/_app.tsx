@@ -9,6 +9,8 @@ import { Homie, SavedMacs, useMacStore } from "../stores/macStore";
 
 import "../styles/tailwind.css";
 
+type IMac = { name: string; mac: string; createdAt: Date; updatedAt: Date; ghost: boolean };
+
 const poppins = Poppins({
   weight: ["300", "500", "700"],
   subsets: ["latin"],
@@ -29,16 +31,12 @@ export default function App({ Component, pageProps }: AppProps) {
     window.socket = socket;
 
     socket.onopen = () => {
-      socket.send("scan");
+      socket.send("connected");
     };
 
     socket.onmessage = (event) => {
-      console.log(event.data);
-      // const results = JSON.parse(msg) as IScanRes[];
-      // console.debug(`📨 received results`, results);
-      // const newMacs = Array.from(new Set(results.map((res) => res.mac)));
-
-      // setStore({ macs: newMacs });
+      const { data } = JSON.parse(event as unknown as string) as { name: string; data: IMac[] };
+      console.debug(`📨 received results`, data);
     };
   }, []);
 
