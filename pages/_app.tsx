@@ -24,7 +24,7 @@ export default function App({ Component, pageProps }: AppProps) {
     // eslint-disable-next-line
     // @ts-ignore
     if (window?.socket != null) return;
-    const socket = new WebSocket("ws://localhost:3000");
+    const socket = new WebSocket("ws://192.168.0.220:3000");
 
     // eslint-disable-next-line
     // @ts-ignore
@@ -35,7 +35,7 @@ export default function App({ Component, pageProps }: AppProps) {
     };
 
     socket.onmessage = (event) => {
-      const { data } = JSON.parse(event as unknown as string) as { name: string; data: IMac[] };
+      const { data } = JSON.parse(event.data) as { name: string; data: IMac[] };
       console.debug(`📨 received results`, data);
     };
   }, []);

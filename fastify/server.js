@@ -25,7 +25,7 @@ fastify.register(async function (fastify) {
   });
 });
 
-fastify.listen({ port: 3000 }, (err, address) => {
+fastify.listen({ port: 3000, host: "0.0.0.0" }, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);
@@ -34,7 +34,7 @@ fastify.listen({ port: 3000 }, (err, address) => {
 });
 
 function parseScan(data) {
-  const updatedMacs = data.map((device) => ({
+  const updatedScan = data.map((device) => ({
     name: device.name,
     mac: device.mac,
     createdAt: new Date(),
@@ -42,9 +42,9 @@ function parseScan(data) {
     ghost: false,
   }));
 
-  const newMacs = macs
+  const updatedMacs = macs
     .map((device) => {
-      const updatedMac = updatedMacs.find(({ mac }) => device.mac === mac);
+      const updatedMac = updatedScan.find(({ mac }) => device.mac === mac);
       if (updatedMac) {
         return { ...device, updatedAt: new Date(), ghost: false };
       } else {
@@ -57,7 +57,9 @@ function parseScan(data) {
     })
     .filter(Boolean);
 
-  macs = newMacs;
+  const newMacs = updatedScan.filter(({ mac }) => !!macs.find((device) => device.mac === mac));
 
-  return newMacs;
+  macs = [...updatedMacs, ...newMacs];
+
+  return [...updatedMacs, ...newMacs];
 }
