@@ -3,10 +3,12 @@ lockfileVersion: 5.4
 specifiers:
   '@fastify/websocket': ^7.1.2
   fastify: ^4.12.0
+  ws: ^8.12.0
 
 dependencies:
   '@fastify/websocket': 7.1.2
   fastify: 4.12.0
+  ws: 8.12.0
 
 packages:
 

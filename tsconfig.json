@@ -15,6 +15,6 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "fastify/parseScan.mts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "fastify/parseScan.mts", "fastify/worker.js"],
   "exclude": ["node_modules"]
 }

@@ -17,28 +17,69 @@ const poppins = Poppins({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
-  const { macs, setStore } = useMacStore();
+  const { setStore } = useMacStore();
   const { setStore: setAlertStore } = useAlertStore();
 
   const socketInit = useCallback(async () => {
     // eslint-disable-next-line
     // @ts-ignore
     if (window?.socket != null) return;
-    const socket = new WebSocket("ws://192.168.0.220:3000");
+    const socket = new WebSocket("ws://localhost:3001");
 
     // eslint-disable-next-line
     // @ts-ignore
     window.socket = socket;
 
     socket.onopen = () => {
-      socket.send("connected");
+      socket.send(JSON.stringify({ name: "connected" }));
     };
 
     socket.onmessage = (event) => {
-      const { data } = JSON.parse(event.data) as { name: string; data: IMac[] };
-      console.debug(`📨 received results`, data);
+      if (!(event.data instanceof Blob)) return;
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const { data } = JSON.parse(reader.result as string) as { name: string; data: IMac[] };
+        console.log(data);
+        setStore((prev) => {
+          const newHomies: Homie[] = data
+            .map((device) => {
+              const savedDevice = prev.saves.find(({ mac }) => device.mac === mac);
+
+              if (savedDevice) {
+                return {
+                  name: savedDevice.name,
+                  mac: device.mac,
+                  ghost: device.ghost,
+                  createdAt: new Date(device.createdAt),
+                  updatedAt: new Date(device.updatedAt),
+                };
+              } else {
+                return null;
+              }
+            })
+            .filter(Boolean) as Homie[];
+
+          newHomies
+            .filter((homie) => !prev.homies.find((_homie) => homie.mac === _homie.mac))
+            .forEach((homie) => {
+              const notification = new Audio("/notification.mp3");
+              notification.play();
+              setAlertStore((prev) => ({
+                content: [
+                  ...(prev.content ?? []),
+                  { key: uuidv4(), value: `${homie.name} arrived` },
+                ],
+              }));
+            });
+
+          return { homies: newHomies };
+        });
+      };
+
+      reader.readAsText(event.data);
     };
-  }, []);
+  }, [setAlertStore, setStore]);
 
   const savesInit = useCallback(() => {
     const saves: SavedMacs = JSON.parse(localStorage.getItem("saves") || "[]");
@@ -49,49 +90,6 @@ export default function App({ Component, pageProps }: AppProps) {
     socketInit();
     savesInit();
   }, [savesInit, socketInit]);
-
-  useEffect(() => {
-    setStore(({ homies, saves }) => {
-      const refreshedSavesMacs = saves.filter((save) => macs.includes(save.mac));
-      const checkedHomies: Homie[] = homies
-        .map((homie) => {
-          const isHomieUpdated = refreshedSavesMacs.find(({ mac }) => mac === homie.mac);
-
-          if (isHomieUpdated) return { ...homie, ghost: false, updatedAt: new Date() };
-
-          if (homie.ghost && new Date().getTime() - homie.updatedAt.getTime() > 60 * 60 * 1000) {
-            return null;
-          }
-
-          return {
-            ...homie,
-            ghost: true,
-            updatedAt: new Date(),
-          };
-        })
-        .filter(Boolean) as Homie[];
-
-      refreshedSavesMacs.forEach((save) => {
-        const alreadyUpdated = checkedHomies.find(({ mac }) => save.mac === mac);
-        if (!alreadyUpdated) {
-          const notification = new Audio("/notification.mp3");
-          notification.play();
-          setAlertStore((prev) => ({
-            content: [...(prev.content ?? []), { key: uuidv4(), value: `${save.name} arrived` }],
-          }));
-          checkedHomies.push({
-            name: save.name,
-            mac: save.mac,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            ghost: false,
-          });
-        }
-      });
-
-      return { homies: checkedHomies };
-    });
-  }, [macs, setAlertStore, setStore]);
 
   return (
     <main
