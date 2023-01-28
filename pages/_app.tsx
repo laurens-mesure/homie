@@ -1,13 +1,11 @@
 import { useCallback, useEffect } from "react";
 import { Poppins } from "@next/font/google";
 import type { AppProps } from "next/app";
-import { io } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 
 import { ProvokeInteraction } from "../components/ProvokeInteraction";
-import { reScan } from "../functions/requestScan";
 import { useAlertStore } from "../stores/alertStore";
-import { Homie, IScanRes, SavedMacs, useMacStore } from "../stores/macStore";
+import { Homie, SavedMacs, useMacStore } from "../stores/macStore";
 
 import "../styles/tailwind.css";
 
@@ -21,21 +19,28 @@ export default function App({ Component, pageProps }: AppProps) {
   const { setStore: setAlertStore } = useAlertStore();
 
   const socketInit = useCallback(async () => {
-    await fetch("/api/socket");
-    const socket = io();
+    // eslint-disable-next-line
+    // @ts-ignore
+    if (window?.socket != null) return;
+    const socket = new WebSocket("ws://localhost:3000");
 
     // eslint-disable-next-line
     // @ts-ignore
     window.socket = socket;
 
-    socket.on("scanResult", (msg) => {
-      const results = JSON.parse(msg) as IScanRes[];
-      console.debug(`📨 received results`, results);
-      const newMacs = Array.from(new Set(results.map((res) => res.mac)));
+    socket.onopen = () => {
+      socket.send("scan");
+    };
 
-      setStore({ macs: newMacs });
-    });
-  }, [setStore]);
+    socket.onmessage = (event) => {
+      console.log(event.data);
+      // const results = JSON.parse(msg) as IScanRes[];
+      // console.debug(`📨 received results`, results);
+      // const newMacs = Array.from(new Set(results.map((res) => res.mac)));
+
+      // setStore({ macs: newMacs });
+    };
+  }, []);
 
   const savesInit = useCallback(() => {
     const saves: SavedMacs = JSON.parse(localStorage.getItem("saves") || "[]");
@@ -45,10 +50,6 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     socketInit();
     savesInit();
-    // const interval = setInterval(reScan, 600000); // 10min
-    const interval = setInterval(reScan, 5000); // 5sec
-
-    return () => clearInterval(interval);
   }, [savesInit, socketInit]);
 
   useEffect(() => {

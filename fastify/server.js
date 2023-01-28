@@ -1,20 +1,26 @@
-import fastify from "fastify";
-import fastifySocket from "fastify-socket.io";
-import findLocal from "local-devices";
+Bun.serve({
+  websocket: {
+    scan(ws, msg) {
+      console.log(msg);
+      ws.send(msg);
+    },
+    async message(ws, msg) {
+      console.log(msg);
+      if (msg === "scan") {
+        // const data = await findLocal();
+        return ws.send(JSON.stringify({ something: "nothing" }));
+      }
 
-const app = fastify();
-
-app.register(fastifySocket, {
-  namespace: "/",
-});
-
-app.io.on("connection", async (socket) => {
-  // init
-  const data = await findLocal();
-  socket.broadcast.emit("scanResult", JSON.stringify(data));
-
-  socket.on("scan", async () => {
-    const data = await findLocal();
-    socket.broadcast.emit("scanResult", JSON.stringify(data));
-  });
+      throw new Error(`msg: ${msg} was not defined`);
+    },
+    close() {
+      console.log("Client has disconnected");
+    },
+  },
+  fetch(req, server) {
+    if (!server.upgrade(req)) {
+      return new Response(null, { status: 404 });
+    }
+  },
+  port: 3000,
 });

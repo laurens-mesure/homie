@@ -13,9 +13,5 @@
   ],
   "author": "Laurens Mesure",
   "license": "Commons Clause",
-  "dependencies": {
-    "fastify": "^4.12.0",
-    "fastify-socket.io": "^4.0.0",
-    "local-devices": "^4.0.0"
-  }
+  "dependencies": { "bun": "^0.5.1", "local-devices": "^4.0.0" }
 }
