@@ -30,7 +30,7 @@ fastify.register(async function (fastify) {
   });
 });
 
-fastify.listen({ port: 3001, host: "0.0.0.0" }, (err, address) => {
+fastify.listen({ port: 3001, host: "127.0.0.1" }, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);

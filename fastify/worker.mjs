@@ -1,7 +1,7 @@
 import findLocal from "local-devices";
 import WebSocket from "ws";
 
-const socket = new WebSocket("ws://localhost:3001");
+const socket = new WebSocket("ws://127.0.0.1:3001");
 
 let macs = [];
 
