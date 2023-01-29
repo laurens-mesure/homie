@@ -24,7 +24,7 @@ export default function App({ Component, pageProps }: AppProps) {
     // eslint-disable-next-line
     // @ts-ignore
     if (window?.socket != null) return;
-    const socket = new WebSocket("ws://localhost:3001");
+    const socket = new WebSocket(process.env.NEXT_PUBLIC_WEBSOCKET_URL!);
 
     // eslint-disable-next-line
     // @ts-ignore

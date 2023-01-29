@@ -21,7 +21,6 @@ fastify.register(async function (fastify) {
       const data = JSON.parse(msg.toString());
       if (data.name === "scan_result") {
         if (fastify.websocketServer.clients.size < 2) return;
-        console.log("Sending...");
         fastify.websocketServer.clients.forEach((client) => {
           client.send(msg);
         });
@@ -30,7 +29,7 @@ fastify.register(async function (fastify) {
   });
 });
 
-fastify.listen({ port: 3001, host: "127.0.0.1" }, (err, address) => {
+fastify.listen({ port: 3001, host: "0.0.0.0" }, (err, address) => {
   if (err) {
     console.error(err);
     process.exit(1);
