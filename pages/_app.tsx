@@ -71,12 +71,10 @@ export default function App({ Component, pageProps }: AppProps) {
               }));
             });
 
-          // Macs
-          const macs = data
-            .map((device) => device.mac)
-            .filter((mac) => !prev.macs.find((_mac) => mac === _mac));
-
-          return { homies: newHomies, macs: [...prev.macs, ...macs] };
+          return {
+            homies: newHomies,
+            macs: data.map((device) => device.mac),
+          };
         });
       };
 
