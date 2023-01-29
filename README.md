@@ -4,8 +4,31 @@ This app allows you to track when your loved ones or friends arrive home. Simply
 
 ## Setup
 
+### Frontend client
+
+Receives socket messages from the backend server with data about the connected network devices.
+
+#### Development
+
+```bash
+pnpm i
+pnpm dev
+```
+
+#### Production
+
 ```bash
 pnpm i
 pnpm build
 pnpm start:production
+```
+
+### Backend server
+
+Sends socket messages with the connected network devices through a multithreaded worker that polls every `n` times for the `arp` table.
+
+```bash
+cd fastify
+pnpm i
+pnpm start
 ```

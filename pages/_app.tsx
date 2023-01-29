@@ -40,23 +40,21 @@ export default function App({ Component, pageProps }: AppProps) {
 
       reader.onload = () => {
         const { data } = JSON.parse(reader.result as string) as { name: string; data: IMac[] };
-        console.log(data);
+        console.info({ localNetworkDevices: data });
         setStore((prev) => {
-          const newHomies: Homie[] = data
+          const newHomies = data
             .map((device) => {
               const savedDevice = prev.saves.find(({ mac }) => device.mac === mac);
 
-              if (savedDevice) {
-                return {
-                  name: savedDevice.name,
-                  mac: device.mac,
-                  ghost: device.ghost,
-                  createdAt: new Date(device.createdAt),
-                  updatedAt: new Date(device.updatedAt),
-                };
-              } else {
-                return null;
-              }
+              if (!savedDevice) return null;
+
+              return {
+                name: savedDevice.name,
+                mac: device.mac,
+                ghost: device.ghost,
+                createdAt: new Date(device.createdAt),
+                updatedAt: new Date(device.updatedAt),
+              };
             })
             .filter(Boolean) as Homie[];
 
@@ -73,7 +71,12 @@ export default function App({ Component, pageProps }: AppProps) {
               }));
             });
 
-          return { homies: newHomies };
+          // Macs
+          const macs = data
+            .map((device) => device.mac)
+            .filter((mac) => !prev.macs.find((_mac) => mac === _mac));
+
+          return { homies: newHomies, macs: [...prev.macs, ...macs] };
         });
       };
 
