@@ -40,7 +40,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
       reader.onload = () => {
         const { data } = JSON.parse(reader.result as string) as { name: string; data: IMac[] };
-        console.info({ localNetworkDevices: data });
+        console.debug({ localNetworkDevices: data });
         setStore((prev) => {
           const newHomies = data
             .map((device) => {
