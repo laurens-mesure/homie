@@ -3,7 +3,7 @@ import WebSocket from "ws";
 
 const socket = new WebSocket("ws://127.0.0.1:3001");
 
-let macs = [];
+let macsDb = [];
 
 socket.onopen = () => {
   setInterval(
@@ -27,13 +27,14 @@ function parseScan(data) {
     ghost: false,
   }));
 
-  const updatedMacs = macs
+  const updatedMacs = macsDb
     .map((device) => {
       const updatedMac = updatedScan.find(({ mac }) => device.mac === mac);
       if (updatedMac) {
         return { ...device, updatedAt: new Date(), ghost: false };
       } else {
         if (device.ghost && new Date().getTime() - device.updatedAt.getTime() > 60 * 60 * 1000) {
+          // Delete from list if ghosted for more then 1 hour
           return null;
         }
 
@@ -42,11 +43,11 @@ function parseScan(data) {
     })
     .filter(Boolean);
 
-  const newMacs = updatedScan.filter(({ mac }) => !macs.find((device) => device.mac === mac));
+  const newMacs = updatedScan.filter(({ mac }) => !macsDb.find((device) => device.mac === mac));
 
-  macs = [...updatedMacs, ...newMacs];
+  macsDb = [...updatedMacs, ...newMacs];
 
-  return [...updatedMacs, ...newMacs];
+  return macsDb;
 }
 
 export {};
