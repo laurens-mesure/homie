@@ -14,7 +14,9 @@ export function PeopleCards() {
   return (
     <div className="relative flex h-screen w-full flex-col p-5">
       <Refresh />
-      <h1 className="py-[20vh] text-center text-6xl font-bold text-gray-300">Who&apos;s home?</h1>
+      <h1 className="py-[20vh] text-center text-6xl font-bold text-gray-300/50">
+        Who&apos;s home?
+      </h1>
       <ul className="group flex w-full flex-row flex-wrap justify-around gap-20">
         {!_homies.length && (
           <p className="text-center text-2xl font-bold text-gray-300/40">
@@ -55,9 +57,12 @@ function Card({ children, homie }: { children: ReactNode; homie: Homie }) {
   return (
     <li
       className={clsx(
-        "cursor-default rounded-2xl bg-[#0F3460] p-10 font-bold text-gray-300 transition-opacity duration-300",
+        "cursor-default rounded-2xl bg-neutral-900 p-10 font-bold transition-opacity duration-300",
         homie.ghost && "opacity-50"
       )}
+      style={{
+        boxShadow: "rgb(18 18 18) 10px 10px 14px 10px, rgb(27 27 27) -10px -10px 14px 10px",
+      }}
     >
       {children}
     </li>

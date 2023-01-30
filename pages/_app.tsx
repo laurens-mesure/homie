@@ -96,7 +96,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <main
       className={
         poppins.className +
-        "relative grid h-full min-h-screen max-w-full place-items-center bg-[#16213E] text-gray-300"
+        "relative grid h-full min-h-screen max-w-full place-items-center bg-neutral-900 text-gray-300"
       }
     >
       <ProvokeInteraction />
