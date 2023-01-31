@@ -16,9 +16,10 @@ fastify.register(socketServer, {
 });
 
 fastify.register(async function (fastify) {
-  fastify.get("/", { websocket: true }, ({ socket }) => {
+  fastify.get("/", { websocket: true }, ({ socket }, { ip }) => {
     socket.on("message", async (msg) => {
       const data = JSON.parse(msg.toString());
+
       if (data.name === "scan_result") {
         if (fastify.websocketServer.clients.size < 2) return;
         console.debug(
@@ -27,6 +28,8 @@ fastify.register(async function (fastify) {
         fastify.websocketServer.clients.forEach((client) => {
           client.send(msg);
         });
+      } else if (data.name === "join") {
+        console.log(ip);
       }
     });
   });
