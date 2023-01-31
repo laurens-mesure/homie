@@ -39,43 +39,63 @@ export default function App({ Component, pageProps }: AppProps) {
       const reader = new FileReader();
 
       reader.onload = () => {
-        const { data } = JSON.parse(reader.result as string) as { name: string; data: IMac[] };
-        console.debug({ localNetworkDevices: data });
-        setStore((prev) => {
-          const newHomies = data
-            .map((device) => {
-              const savedDevice = prev.saves.find(({ mac }) => device.mac === mac);
+        const message = JSON.parse(reader.result as string) as
+          | {
+              name: "scan_result";
+              data: IMac[];
+            }
+          | { name: "joined"; mac: string; deviceName: string }
+          | { name: "init_seed" }
+          | { name: "seed"; saves: SavedMacs };
+        if (message.name === "scan_result") {
+          const { data } = message;
+          setStore((prev) => {
+            const newHomies = data
+              .map((device) => {
+                const savedDevice = prev.saves.find(({ mac }) => device.mac === mac);
 
-              if (!savedDevice) return null;
+                if (!savedDevice) return null;
 
-              return {
-                name: savedDevice.name,
-                mac: device.mac,
-                ghost: device.ghost,
-                createdAt: new Date(device.createdAt),
-                updatedAt: new Date(device.updatedAt),
-              };
-            })
-            .filter(Boolean) as Homie[];
+                return {
+                  name: savedDevice.name,
+                  mac: device.mac,
+                  ghost: device.ghost,
+                  createdAt: new Date(device.createdAt),
+                  updatedAt: new Date(device.updatedAt),
+                };
+              })
+              .filter(Boolean) as Homie[];
 
-          newHomies
-            .filter((homie) => !prev.homies.find((_homie) => homie.mac === _homie.mac))
-            .forEach((homie) => {
-              const notification = new Audio("/notification.mp3");
-              notification.play();
-              setAlertStore((prev) => ({
-                content: [
-                  ...(prev.content ?? []),
-                  { key: uuidv4(), value: `${homie.name} arrived` },
-                ],
-              }));
-            });
+            newHomies
+              .filter((homie) => !prev.homies.find((_homie) => homie.mac === _homie.mac))
+              .forEach((homie) => {
+                const notification = new Audio("/notification.mp3");
+                notification.play();
+                setAlertStore((prev) => ({
+                  content: [
+                    ...(prev.content ?? []),
+                    { key: uuidv4(), value: `${homie.name} arrived` },
+                  ],
+                }));
+              });
 
-          return {
-            homies: newHomies,
-            macs: data.map((device) => device.mac),
-          };
-        });
+            return {
+              homies: newHomies,
+              macs: data.map((device) => device.mac),
+            };
+          });
+        } else if (message.name === "joined") {
+          const saves: SavedMacs = JSON.parse(localStorage.getItem("saves") || "[]");
+          setStore({
+            saves: [...saves, { index: uuidv4(), name: message.name, mac: message.mac }],
+          });
+        } else if (message.name === "init_seed") {
+          const saves: SavedMacs = JSON.parse(localStorage.getItem("saves") || "[]");
+          socket.send(JSON.stringify({ name: "seed_resp", saves }));
+        } else if (message.name === "seed") {
+          localStorage.setItem("saves", JSON.stringify(message.saves));
+          setStore({ saves: message.saves });
+        }
       };
 
       reader.readAsText(event.data);

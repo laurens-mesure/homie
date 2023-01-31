@@ -1,5 +1,6 @@
 import socketServer from "@fastify/websocket";
 import fastifyServer from "fastify";
+import findLocal from "local-devices";
 import { Worker } from "node:worker_threads";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -25,11 +26,16 @@ fastify.register(async function (fastify) {
         console.debug(
           `↗️  Sending data to socket clients (# ${fastify.websocketServer.clients.size})`
         );
-        fastify.websocketServer.clients.forEach((client) => {
-          client.send(msg);
-        });
+        fastify.websocketServer.emit(msg);
       } else if (data.name === "join") {
-        console.log(ip);
+        const devices = await findLocal();
+        const deviceName = data.deviceName;
+
+        const newDevice = devices.find((device) => device.ip === ip);
+        socket.send(JSON.stringify({ name: "joined", mac: newDevice.mac, deviceName }));
+        socket.send(JSON.stringify({ name: "init_seed" }));
+      } else if (data.name === "seed_resp") {
+        fastify.websocketServer.emit(JSON.stringify({ name: "seed", saves: data.saves }));
       }
     });
   });
