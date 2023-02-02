@@ -56,8 +56,13 @@ export default function App({ Component, pageProps }: AppProps) {
           newHomies
             .filter((homie) => !prev.homies.find((_homie) => homie.mac === _homie.mac))
             .forEach((homie) => {
-              const notification = new Audio("/notification.mp3");
-              notification.play();
+              try {
+                const notification = new Audio("/notification.mp3");
+                notification.play().catch(() => console.error("Could not play audiofile :("));
+              } catch (error) {
+                console.error("Could not play audiofile :(");
+              }
+
               setAlertStore((prev) => ({
                 content: [
                   ...(prev.content ?? []),
