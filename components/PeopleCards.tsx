@@ -4,7 +4,6 @@ import clsx from "clsx";
 import { Homie, useMacStore } from "../stores/macStore";
 
 import { AlertStack } from "./AlertStack";
-import { Refresh } from "./Refresh";
 
 export function PeopleCards() {
   const { homies } = useMacStore();
@@ -12,8 +11,7 @@ export function PeopleCards() {
   const _homies = homies.filter((homie) => homie.name !== "");
 
   return (
-    <div className="relative flex h-screen w-full flex-col p-5">
-      <Refresh />
+    <div className="relative flex min-h-screen w-full flex-col p-5 pb-20">
       <h1 className="py-[20vh] text-center text-6xl font-bold text-gray-300/50">
         Who&apos;s home?
       </h1>

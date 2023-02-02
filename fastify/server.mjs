@@ -26,16 +26,23 @@ fastify.register(async function (fastify) {
         console.debug(
           `↗️  Sending data to socket clients (# ${fastify.websocketServer.clients.size})`
         );
-        fastify.websocketServer.emit(msg);
+        fastify.websocketServer.clients.forEach((client) => {
+          client.send(msg);
+        });
       } else if (data.name === "join") {
         const devices = await findLocal();
         const deviceName = data.deviceName;
 
         const newDevice = devices.find((device) => device.ip === ip);
-        socket.send(JSON.stringify({ name: "joined", mac: newDevice.mac, deviceName }));
-        socket.send(JSON.stringify({ name: "init_seed" }));
+        if (newDevice == null) return;
+        console.log(newDevice);
+        fastify.websocketServer.clients.forEach((client) => {
+          client.send(JSON.stringify({ name: "init_seed", mac: newDevice.mac, deviceName }));
+        });
       } else if (data.name === "seed_resp") {
-        fastify.websocketServer.emit(JSON.stringify({ name: "seed", saves: data.saves }));
+        fastify.websocketServer.clients.forEach((client) => {
+          client.send(JSON.stringify({ name: "seed", saves: data.saves }));
+        });
       }
     });
   });
