@@ -12,7 +12,7 @@ export function PeopleCards() {
 
   return (
     <div className="relative flex min-h-screen w-full flex-col p-5 pb-20">
-      <h1 className="py-[20vh] text-center text-6xl font-bold text-gray-300/50">
+      <h1 className="py-[10vh] text-center text-4xl font-bold text-gray-300/50 sm:text-6xl md:py-[20vh]">
         Who&apos;s home?
       </h1>
       <ul className="group flex w-full flex-row flex-wrap justify-around gap-20">

@@ -45,7 +45,7 @@ export function AddRows() {
     <ol className="w-full">
       {saves.map((save) => (
         <li
-          className="h-[5vh] min-h-[3.75rem] border-b border-gray-300 px-5 first:border-y"
+          className="h-[5vh] min-h-[3.75rem] w-full border-b border-gray-300 px-5 first:border-y"
           key={save.index}
         >
           <form className="flex h-full w-full flex-row" onBlur={(e) => saveMac(e, save.index)}>
@@ -73,7 +73,7 @@ export function MacAddresses({
 }) {
   return (
     <select
-      className="w-1/4 bg-transparent text-gray-300 hover:text-indigo-600"
+      className="w-1/4 truncate bg-transparent text-gray-300 hover:text-indigo-600"
       defaultValue={defaultValue || undefined}
       name="mac"
     >
