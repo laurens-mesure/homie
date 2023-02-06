@@ -6,13 +6,23 @@ import { Homie, useMacStore } from "../stores/macStore";
 import { AlertStack } from "./AlertStack";
 
 export function PeopleCards() {
-  const { homies } = useMacStore();
+  const { homies, setStore } = useMacStore();
 
   const _homies = homies.filter((homie) => homie.name !== "");
 
+  function handleClick(e: React.MouseEvent<HTMLHeadElement>) {
+    if (e.detail === 10) {
+      localStorage.removeItem("saves");
+      setStore({ saves: [], homies: [] });
+    }
+  }
+
   return (
     <div className="relative flex min-h-screen w-full flex-col p-5 pb-20">
-      <h1 className="py-[10vh] text-center text-4xl font-bold text-gray-300/50 sm:text-6xl md:py-[20vh]">
+      <h1
+        className="select-none py-[10vh] text-center text-4xl font-bold text-gray-300/50 sm:text-6xl md:py-[20vh]"
+        onClick={handleClick}
+      >
         Who&apos;s home?
       </h1>
       <ul className="group flex w-full flex-row flex-wrap justify-around gap-20">

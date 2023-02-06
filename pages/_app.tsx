@@ -85,12 +85,12 @@ export default function App({ Component, pageProps }: AppProps) {
         ];
         setStore({ saves: updatedSaves });
         localStorage.setItem("saves", JSON.stringify(updatedSaves));
-        console.log(updatedSaves);
         socket.send(JSON.stringify({ name: "seed_resp", saves }));
       } else if (message.name === "seed") {
         if (localStorage.getItem("saves") != null) return;
         localStorage.setItem("saves", JSON.stringify(message.saves));
         setStore({ saves: message.saves });
+        setStore({ seedLoading: false });
       }
     },
     [setAlertStore, setStore]

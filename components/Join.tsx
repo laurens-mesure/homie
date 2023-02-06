@@ -1,8 +1,11 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 
+import { useMacStore } from "../stores/macStore";
+
 export function Join() {
   const [open, setOpen] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { setStore } = useMacStore();
 
   useEffect(() => {
     if (!localStorage.getItem("saves")) {
@@ -32,6 +35,11 @@ export function Join() {
 
     animate.onfinish = () => setOpen(false);
     animate.play();
+    setStore({ seedLoading: true });
+  }
+
+  function hanldeClose() {
+    setOpen(false);
   }
 
   return open ? (
@@ -39,7 +47,13 @@ export function Join() {
       className="fixed top-0 left-0 z-10 grid h-full w-full place-items-center bg-neutral-900/50 backdrop-blur-lg"
       ref={containerRef}
     >
-      <div className="flex min-w-[40vw] flex-col rounded-lg border border-neutral-800 bg-neutral-900 p-5">
+      <div className="relative flex min-w-[40vw] flex-col rounded-lg border border-neutral-800 bg-neutral-900 p-5">
+        <p
+          className="absolute top-2 right-3 rounded-sm bg-neutral-300/20 px-1.5 font-mono"
+          onClick={hanldeClose}
+        >
+          X
+        </p>
         <p className="mb-10 text-center text-xl font-bold">Who are you? 💡</p>
         <form onSubmit={handleSubmit}>
           <input
@@ -50,7 +64,7 @@ export function Join() {
             required
           />
           <button
-            className="self-center rounded-md bg-indigo-800 px-5 py-2 text-center text-lg font-semibold text-gray-200"
+            className="w-full self-center rounded-md bg-indigo-800 px-5 py-2 text-center text-lg font-semibold text-gray-200"
             type="submit"
           >
             Join
